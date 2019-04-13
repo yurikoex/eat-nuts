@@ -4,5 +4,7 @@ export default {
 	thinking: 'thinking',
 	eating: 'eating',
 	panicing: 'panicing',
-	watching: 'watching'
+	watching: 'watching',
+	playing: 'playing',
+	nothing: 'nothing'
 }

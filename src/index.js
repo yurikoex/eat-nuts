@@ -60,34 +60,16 @@ if (isMaster) {
 		console.log('process each squirrel')
 		const squirrelsCompleted = await Promise.all(
 			squirrels.map(async squirrel => {
-				// console.log(
-				// 	`${squirrel.name}'s position: ${JSON.stringify(
-				// 		squirrel.position,
-				// 		null,
-				// 		'\t'
-				// 	)}`
-				// )
-				// console.log(
-				// 	`${squirrel.name}'s awareness.max: ${squirrel.awareness.max}`
-				// )
-				// console.log(
-				// 	`${squirrel.name}'s awareness.distance: ${
-				// 		squirrel.awareness.distance
-				// 	}`
-				// )
-
-				// console.log(`Preparing ${squirrel.name}'s awareness zone`)
 				const surroundings = neighbors.nearest(
-					squirrel.position,
-					squirrel.awareness.max
+					squirrel,
+					squirrel.awareness.max,
+					squirrel.awareness.distance
 				)
 
-				console.log(
-					`Things near ${squirrel.name}`,
-					JSON.stringify(surroundings, null, '\t')
-				)
-
-				return await doProcessSquirrel({ squirrel, surroundings })
+				return await doProcessSquirrel({
+					squirrel,
+					surroundings: surroundings.map(([item]) => item)
+				})
 			})
 		)
 
