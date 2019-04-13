@@ -1,0 +1,19 @@
+{
+	"name": "eat-nuts",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node -r esm src/index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"esm": "^3.2.22",
+		"kd-tree-javascript": "^1.0.3",
+		"parallel-job-runner": "0.0.5",
+		"underscore": "^1.9.1",
+		"uuid": "^3.3.2",
+		"victor": "^1.1.0"
+	}
+}
