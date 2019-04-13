@@ -10,6 +10,15 @@ const consumeEnergy = (creature, action) => {
 	}
 }
 
+const randomMove = squirrel => {
+	const randAngle = (Math.random() * 360) | 0
+	return {
+		action: actions.moving,
+		x: Math.cos((randAngle * Math.PI) / 180) * squirrel.speed + squirrel.x,
+		y: Math.sin((randAngle * Math.PI) / 180) * squirrel.speed + squirrel.y
+	}
+}
+
 export default async ({ squirrel, surroundings }) => {
 	const [otherLivingSquirrel] = surroundings.filter(
 		i => i.type === 'squirrel' && i.state === states.living
@@ -19,7 +28,9 @@ export default async ({ squirrel, surroundings }) => {
 		case actions.eating:
 			return {
 				...squirrel,
-				action: actions.nothing
+				action: actions.nothing,
+				contains: [],
+				energy: squirrel.energy < 1 ? squirrel.energy + 0.1 : 1
 			}
 		case '':
 		case null:
@@ -51,21 +62,20 @@ export default async ({ squirrel, surroundings }) => {
 					action: actions.playing,
 					position: { x: otherLivingSquirrel.x, y: otherLivingSquirrel.y }
 				}
+			} else {
+				return {
+					...squirrel,
+					...randomMove(squirrel)
+				}
 			}
 		case actions.playing:
 			if (
 				otherLivingSquirrel &&
 				otherLivingSquirrel.action === actions.playing
 			) {
-				const randAngle = (Math.random() * 360) | 0
 				return {
 					...squirrel,
-					action: actions.moving,
-
-					x:
-						Math.cos((randAngle * Math.PI) / 180) * squirrel.speed + squirrel.x,
-
-					y: Math.sin((randAngle * Math.PI) / 180) * squirrel.speed + squirrel.y
+					...randomMove(squirrel)
 				}
 			}
 		case actions.moving:

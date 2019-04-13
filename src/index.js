@@ -11,6 +11,7 @@ import doProcessNut from './job/jobs/processNut'
 import createParallelJobRunner from 'parallel-job-runner'
 import states from './common/states'
 import range from './common/range'
+import actions from './common/actions'
 
 const numOfSquirrels = process.argv[2] || 100
 const numOfNuts = process.argv[3] || 100
@@ -45,19 +46,18 @@ if (isMaster) {
 		.map(() => Victor(1, 1).randomize(topLeft, bottomRight))
 		.map(({ x, y }) => squirrel({ x, y }))
 
-	const neighbors = new kdTree.kdTree(
-		[...initialNuts, ...initialSquirrels],
-		distance,
-		['x', 'y']
-	)
+	const getNeighbors = values => new kdTree.kdTree(values, distance, ['x', 'y'])
 
 	const tick = async ({
 		nuts = initialNuts,
 		squirrels = initialSquirrels
 	} = {}) => {
-		console.log('tick starting')
+		// console.log('tick starting')
 
-		console.log('process each squirrel')
+		// console.log('building neighbors')
+		const neighbors = getNeighbors([...nuts, ...squirrels])
+
+		// console.log('process each squirrel')
 		const squirrelsCompleted = await Promise.all(
 			squirrels.map(async squirrel => {
 				const surroundings = neighbors.nearest(
@@ -73,9 +73,17 @@ if (isMaster) {
 			})
 		)
 
-		console.log(`Squirrels Complete`)
-		console.log(JSON.stringify(squirrelsCompleted, null, '\t'))
-		//tick({squirrels:squirrelsCompleted, nuts})
+		// console.log(`Squirrels Complete`)
+		// console.log(JSON.stringify(squirrelsCompleted, null, '\t'))
+
+		// console.log(`Removing nuts eating by squirrels`)
+		const eatenIds = squirrelsCompleted
+			.filter(s => s.action === actions.eating)
+			.reduce((ids, { contains }) => [...ids, contains.map(({ id }) => id)], [])
+
+		const remainingNuts = nuts.filter(({ id }) => eatenIds.indexOf(id) !== -1) //nasty o^2
+
+		tick({ squirrels: squirrelsCompleted, nuts: remainingNuts })
 	}
 
 	try {
