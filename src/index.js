@@ -61,20 +61,40 @@ if (isMaster) {
 		const neighbors = getNeighbors([...nuts, ...squirrels])
 
 		// console.log('process each squirrel')
-		const squirrelsCompleted = await Promise.all(
+		const squirrelsCompletedCalls = await Promise.all(
 			squirrels.map(async squirrel => {
 				const surroundings = neighbors.nearest(
 					squirrel,
 					squirrel.awareness.max,
 					squirrel.awareness.distance
 				)
-
 				return await processSquirrel({
 					squirrel,
 					surroundings: surroundings.map(([item]) => item)
 				})
 			})
 		)
+		const {
+			processingTime,
+			squirrelsCompleted
+		} = squirrelsCompletedCalls.reduce((calls, {
+			meta: {
+				// success,
+				// worker: { pid },
+				timing: {
+					// start,
+					duration
+				}
+			},
+			result
+		}) => {
+			calls.processingTime += duration
+			calls.squirrelsCompleted.push(result)
+			return calls
+		}, {
+			processingTime: 0,
+			squirrelsCompleted: []
+		})
 
 		// console.log(`Squirrels Complete`)
 		// console.log(JSON.stringify(squirrelsCompleted, null, '\t'))
@@ -86,8 +106,8 @@ if (isMaster) {
 
 		const remainingNuts = nuts.filter(({ id }) => eatenIds.indexOf(id) !== -1) //nasty o^2
 		const end = Date.now()
-		console.log('duration:', end - start)
-		tick({ squirrels: squirrelsCompleted, nuts: remainingNuts })
+		console.log('duration:', end - start, 'processing time:', processingTime)
+		await tick({ squirrels: squirrelsCompleted, nuts: remainingNuts })
 	}
 
 	try {
@@ -96,7 +116,6 @@ if (isMaster) {
 		process.exit(0)
 	} catch (error) {
 		console.log(error)
-
 		await disposeParallelJobRunner()
 		process.exit(1)
 	}
