@@ -1,19 +1,31 @@
 {
-	"name": "eat-nuts",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"start": "node -r esm src/index.js"
-	},
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"esm": "^3.2.22",
-		"kd-tree-javascript": "^1.0.3",
-		"parallel-job-runner": "0.0.6",
-		"underscore": "^1.9.1",
-		"uuid": "^3.3.2",
-		"victor": "^1.1.0"
-	}
+    "name": "eat-nuts",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/plugin-transform-react-jsx": "^7.3.0",
+        "@babel/preset-env": "^7.4.3",
+        "@babel/preset-react": "^7.0.0",
+        "@babel/register": "^7.4.0",
+        "@std/esm": "^0.26.0",
+        "blessed": "^0.1.81",
+        "esm": "^3.2.22",
+        "kd-tree-javascript": "^1.0.3",
+        "parallel-job-runner": "0.0.6",
+        "react": "^16.8.6",
+        "react-blessed": "^0.5.0",
+        "react-devtools": "^3.6.1",
+        "rxjs": "^6.4.0",
+        "underscore": "^1.9.1",
+        "uuid": "^3.3.2",
+        "victor": "^1.1.0",
+        "ws": "^6.2.1"
+    }
 }
